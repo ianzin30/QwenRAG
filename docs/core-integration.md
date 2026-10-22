@@ -54,7 +54,9 @@ status and, for git installs, the commit. It then compares the effective pipelin
 | `pin_mismatch` | Installed package differs from the lock | refused unless allowed |
 
 Dependency versions that differ from the release's evaluated environment are listed as
-`environment_differences` (warnings).
+`environment_differences` (warnings). Libraries that shape the searchable corpus are constrained to the evaluated
+version in `backend/pyproject.toml` (`[tool.uv] constraint-dependencies`, currently `pypdf==6.9.2`); review
+that list when adopting a new release.
 
 `GET /api/diagnostics/pipeline` and `uv run python -m qwenrag --check` show the release, the adoption
 report, the pipeline signature and config hash, the model identities and the loaded index fingerprints,

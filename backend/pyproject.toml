@@ -26,6 +26,11 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["qwenrag"]
 
+[tool.uv]
+# Same versions as the core release's evaluated environment for libraries that shape the
+# searchable corpus: pypdf extracts PDF text, so another version can change indexes.
+constraint-dependencies = ["pypdf==6.9.2"]
+
 [tool.uv.sources]
 # Immutable pin: the commit of an approved core release (core-release.lock.json records it).
 rag-ufc-core = { git = "https://github.com/ianzin30/RAG_UFC.git", rev = "94d1c84b77433f86fbd499b08f3647dab6489598", subdirectory = "packages/rag-ufc-core" }
