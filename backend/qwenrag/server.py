@@ -49,10 +49,21 @@ def create_app(settings: AppSettings | None = None, *, core: CoreRuntime | None 
     return app
 
 
+class FrontendFiles(StaticFiles):
+    """The built UI. index.html must be revalidated so a rebuild is picked up on the next
+    load; assets have content hashes in their names and may be cached."""
+
+    async def get_response(self, path, scope):
+        response = await super().get_response(path, scope)
+        if response.headers.get("content-type", "").startswith("text/html"):
+            response.headers["Cache-Control"] = "no-cache"
+        return response
+
+
 def _serve_frontend(app: FastAPI, settings: AppSettings) -> None:
     """One URL for users: the built React app at "/" (``npm run build``), the API under /api."""
     if (settings.frontend_dist / "index.html").exists():
-        app.mount("/", StaticFiles(directory=settings.frontend_dist, html=True), name="frontend")
+        app.mount("/", FrontendFiles(directory=settings.frontend_dist, html=True), name="frontend")
         return
 
     @app.get("/", include_in_schema=False)

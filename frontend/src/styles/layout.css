@@ -89,15 +89,11 @@
   font-weight: 500;
 }
 
-/* Narrow desktop / tablet: the sidebar floats over the content (prototype behavior ≤ 820px). */
+/* Narrow desktop / tablet: the sidebar keeps sharing the row with the chat (no overlay) and
+   narrows with the window; below 640px the mobile shell and its drawer take over. */
 @media (max-width: 820px) {
-  .sidebar {
-    position: absolute;
-    z-index: 30;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    box-shadow: var(--shadow);
+  .desktop-shell {
+    --sidebar-w: clamp(232px, 32vw, 288px);
   }
   .sources__grid {
     grid-template-columns: minmax(0, 1fr);

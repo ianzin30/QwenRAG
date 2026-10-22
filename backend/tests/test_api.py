@@ -362,5 +362,6 @@ def test_root_serves_the_built_frontend(settings):
     (dist / "index.html").write_text("<!doctype html><div id=root>QwenRAG UI</div>", encoding="utf-8")
     app = create_app(replace(settings, frontend_dist=dist), service_factory=FakeService)
     with TestClient(app) as client:
-        assert "QwenRAG UI" in client.get("/").text
+        page = client.get("/")
+        assert "QwenRAG UI" in page.text and page.headers["cache-control"] == "no-cache"
         assert client.get("/api/config").status_code == 200
