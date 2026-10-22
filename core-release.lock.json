@@ -1,0 +1,15 @@
+{
+  "schema": "qwenrag.core_release_lock.v1",
+  "core_version": "1.0.0",
+  "source": {
+    "repository": "https://github.com/ianzin30/RAG_UFC.git",
+    "commit": "94d1c84b77433f86fbd499b08f3647dab6489598",
+    "subdirectory": "packages/rag-ufc-core"
+  },
+  "core_source_fingerprint": "484b33c96835e0d267669e47c33a94192617cf8484eb131be8e47ce1f7aa312c",
+  "release_manifest_sha256": "abe145639d9accb410e986ece5617859a65eb3dfc41b43fbc3e2f2fa97187da6",
+  "release_kind": "baseline_continuity",
+  "approval_status": "baseline_continuity",
+  "pipeline_config_hash": "01bd58ba5fdf09959a12ee7d274fa8a2171e49b6741f6843f120826f2377fd08",
+  "adopted_at": "2026-10-21"
+}

@@ -1,0 +1,42 @@
+# QwenRAG application settings. Relative paths are relative to this file.
+# The RAG pipeline is NOT configured here: it comes from the pinned rag-ufc-core
+# release (RELEASE.json). Only deployment details belong in [core.deployment].
+
+data_root = "../data"            # collections/ (Markdown corpus), cache/rag_v2/ (indexes), conversations.json
+conversations_file = "conversations.json"
+env_file = "../.env"             # secrets such as LLM_API_KEY; exported variables take precedence
+frontend_dist = "../frontend/dist"  # built UI served at "/" (npm run build); API stays under /api
+max_upload_mb = 200
+
+[chat]
+history_messages = 6
+max_sessions = 6
+title_max_chars = 34
+excerpt_chars = 900
+default_title = "Nova conversa"
+
+# Models offered in the UI. Only the release's approved model is accepted unless
+# core.allow_divergent_pipeline is true.
+[[models]]
+model_name = "nvidia/Qwen3.6-35B-A3B-NVFP4"
+label = "Qwen 3.6 — Spark"
+
+[core]
+lock = "../core-release.lock.json"
+# Keep false: a pipeline that differs from the approved release refuses to start.
+allow_divergent_pipeline = false
+
+[core.deployment.llm]
+timeout_seconds = 420
+
+[core.deployment.llm.providers.spark]
+base_url = "https://spark.ollama.atlab.ufc.br/api"
+api_key_env = "LLM_API_KEY"
+
+[core.deployment.retrieval]
+device = "cpu"
+batch_size = 8
+embedding_ollama_base_url = "http://localhost:11434"
+embedding_timeout_seconds = 120
+
+# [core.overrides]  # deliberate pipeline changes; reported as "divergent"
