@@ -1,0 +1,70 @@
+/* Design tokens — values taken verbatim from the HF prototypes (ProtoDesktop / ProtoMobile). */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --side: #f7f7f8;
+  --surface: #ffffff;
+  --sunk: #f2f2f4;
+  --line: #e7e7ea;
+  --line2: #d9d9de;
+  --ink: #0e0f12;
+  --ink2: #41434b;
+  --mute: #686b74;
+  --hover: rgba(14, 15, 18, 0.05);
+  --shadow: 0 1px 2px rgba(14, 15, 18, 0.05), 0 8px 24px rgba(14, 15, 18, 0.06);
+  --shadow-lg: 0 24px 60px rgba(14, 15, 18, 0.18);
+  --ok: #1f9d57;
+  --danger: #c2410c;
+  --primary: #0e0f12;
+  --on-primary: #ffffff;
+  --scrim: rgba(14, 15, 18, 0.32);
+
+  --accent: #3355ff;
+  --on-accent: #ffffff;
+  --soft: color-mix(in srgb, var(--accent) 11%, transparent);
+  --soft2: color-mix(in srgb, var(--accent) 22%, transparent);
+  --danger-soft: color-mix(in srgb, var(--danger) 9%, var(--surface));
+
+  --font-sans: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --radius-xs: 5px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-sheet: 22px;
+  --radius-pill: 999px;
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 300ms;
+
+  --sidebar-w: 288px;
+  --thread-w: 760px;
+  --focus-ring: 0 0 0 3px var(--soft2);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0c0d10;
+  --side: #111216;
+  --surface: #16171c;
+  --sunk: #1b1d23;
+  --line: #23252c;
+  --line2: #30333b;
+  --ink: #ecedf0;
+  --ink2: #b9bcc5;
+  --mute: #8c909a;
+  --hover: rgba(255, 255, 255, 0.05);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --ok: #3dd68c;
+  --danger: #fb923c;
+  --primary: #ecedf0;
+  --on-primary: #0c0d10;
+  --scrim: rgba(0, 0, 0, 0.55);
+  --accent: #8ea2ff;
+  --on-accent: #0c0d10;
+}
