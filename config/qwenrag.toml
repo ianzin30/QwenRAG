@@ -5,6 +5,7 @@
 data_root = "../data"            # collections/ (Markdown corpus), cache/rag_v2/ (indexes), conversations.json
 conversations_file = "conversations.json"
 env_file = "../.env"             # secrets such as LLM_API_KEY; exported variables take precedence
+frontend_dist = "../frontend/dist"  # built UI served at "/" (npm run build); API stays under /api
 max_upload_mb = 200
 
 [chat]

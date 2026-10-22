@@ -346,3 +346,21 @@ def test_upload_failures(env):
     traversal = client.post("/api/uploads", data={"collection": "../fora"}, files=[("files", ("a.txt", b"x", "text/plain"))])
     assert traversal.status_code == 400
     assert client.get("/api/uploads/nope/events").status_code == 404
+
+
+def test_root_explains_the_api_when_the_frontend_is_not_built(env):
+    client, _ = env
+    response = client.get("/")
+    assert response.status_code == 200 and "/api/docs" in response.text
+
+
+def test_root_serves_the_built_frontend(settings):
+    from dataclasses import replace
+
+    dist = settings.data_root.parent / "dist"
+    dist.mkdir()
+    (dist / "index.html").write_text("<!doctype html><div id=root>QwenRAG UI</div>", encoding="utf-8")
+    app = create_app(replace(settings, frontend_dist=dist), service_factory=FakeService)
+    with TestClient(app) as client:
+        assert "QwenRAG UI" in client.get("/").text
+        assert client.get("/api/config").status_code == 200

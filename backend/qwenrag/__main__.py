@@ -13,7 +13,7 @@ import sys
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="python -m qwenrag", description=__doc__)
     parser.add_argument("--host", default=os.getenv("QWENRAG_HOST", "127.0.0.1"))
-    parser.add_argument("--port", type=int, default=int(os.getenv("QWENRAG_PORT", "8000")))
+    parser.add_argument("--port", type=int, default=int(os.getenv("QWENRAG_PORT", "8010")))
     parser.add_argument("--config", help="defaults to $QWENRAG_CONFIG, ./config/qwenrag.toml or ../config/qwenrag.toml")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args(argv)

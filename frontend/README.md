@@ -22,7 +22,7 @@ npm run dev:mock      # demo data in the browser, no backend needed → http://l
 Against the backend (`cd ../backend && uv run python -m qwenrag`):
 
 ```bash
-cp .env.example .env.local     # set VITE_DEV_PROXY_TARGET=http://127.0.0.1:8000
+cp .env.example .env.local     # set VITE_DEV_PROXY_TARGET=http://127.0.0.1:8010
 npm run dev
 ```
 

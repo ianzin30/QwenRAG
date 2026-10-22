@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 from .api import conversations, library, turns, uploads
 from .api.errors import ApiError, api_error_handler
@@ -43,4 +45,23 @@ def create_app(settings: AppSettings | None = None, *, core: CoreRuntime | None 
     app.add_exception_handler(ApiError, api_error_handler)
     for module in (library, conversations, turns, uploads):
         app.include_router(module.router, prefix="/api")
+    _serve_frontend(app, settings)
     return app
+
+
+def _serve_frontend(app: FastAPI, settings: AppSettings) -> None:
+    """One URL for users: the built React app at "/" (``npm run build``), the API under /api."""
+    if (settings.frontend_dist / "index.html").exists():
+        app.mount("/", StaticFiles(directory=settings.frontend_dist, html=True), name="frontend")
+        return
+
+    @app.get("/", include_in_schema=False)
+    def frontend_not_built():
+        return HTMLResponse(
+            "<!doctype html><meta charset=utf-8><title>QwenRAG API</title>"
+            "<body style='font-family:sans-serif;max-width:40rem;margin:3rem auto'>"
+            "<h1>QwenRAG API</h1><p>A API está rodando em <code>/api</code> "
+            "(<a href='/api/docs'>documentação</a>, <a href='/api/diagnostics/pipeline'>diagnóstico</a>).</p>"
+            "<p>A interface ainda não foi compilada. Rode <code>npm run build</code> em <code>frontend/</code> "
+            "e reinicie o backend, ou use o servidor de desenvolvimento (<code>npm run dev</code>).</p></body>"
+        )

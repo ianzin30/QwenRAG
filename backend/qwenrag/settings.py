@@ -48,6 +48,7 @@ class FileSettings(BaseModel):
     data_root: str = "../data"
     conversations_file: str = "conversations.json"
     env_file: str = "../.env"
+    frontend_dist: str = "../frontend/dist"
     max_upload_mb: int = Field(default=200, ge=1)
     chat: ChatSettings = Field(default_factory=ChatSettings)
     models: list[ModelOption] = Field(default_factory=list)
@@ -61,6 +62,7 @@ class AppSettings:
     conversations_path: Path
     env_file: Path
     lock_path: Path
+    frontend_dist: Path
     max_upload_bytes: int
     chat: ChatSettings
     models: tuple[ModelOption, ...]
@@ -102,6 +104,7 @@ class AppSettings:
                                        or data_root / values.conversations_file),
             env_file=resolve(values.env_file),
             lock_path=resolve(values.core.lock),
+            frontend_dist=resolve(values.frontend_dist),
             max_upload_bytes=values.max_upload_mb * 1024 * 1024,
             chat=values.chat,
             models=tuple(values.models),

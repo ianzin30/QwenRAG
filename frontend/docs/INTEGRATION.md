@@ -1,7 +1,7 @@
 # Backend integration guide
 
 The routes below are implemented by the FastAPI backend in `backend/qwenrag/` (run it with
-`uv run python -m qwenrag` from `backend/`, default `127.0.0.1:8000`; `--port` or `QWENRAG_PORT` to change).
+`uv run python -m qwenrag` from `backend/`, default `127.0.0.1:8010`; `--port` or `QWENRAG_PORT` to change).
 `src/services/api/httpAdapter.ts` and `dto.ts` match it without changes; the places where the real API
 differs from the original proposal or adds to it are listed in
 [Implementation notes](#implementation-notes-fastapi). Field names reuse what the RAG core produces.

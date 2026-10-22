@@ -15,7 +15,8 @@ def make_settings(tmp_path, **core):
     import tomllib
 
     raw = tomllib.loads(CONFIG.read_text(encoding="utf-8"))
-    raw.update(data_root=str(tmp_path / "data"), env_file=str(tmp_path / ".env"))
+    raw.update(data_root=str(tmp_path / "data"), env_file=str(tmp_path / ".env"),
+               frontend_dist=str(tmp_path / "frontend-not-built"))
     raw["core"] = {**raw["core"], "lock": str(tmp_path / "core-release.lock.json"), **core}
     lock = tmp_path / "core-release.lock.json"
     if not lock.exists():

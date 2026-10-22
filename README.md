@@ -19,17 +19,22 @@ produced it.
 ## Run
 
 ```bash
-cp .env.example .env              # fill LLM_API_KEY
+cp .env.example .env                       # fill LLM_API_KEY
+cd frontend && npm install && npm run build && cd ..   # builds the UI the backend serves
 cd backend
-uv sync                           # installs the pinned rag-ufc-core from GitHub
-uv run python -m qwenrag --check  # verifies the core release and prints the pipeline identity
-uv run python -m qwenrag          # http://127.0.0.1:8000/api (OpenAPI docs at /api/docs)
+uv sync                                    # installs the pinned rag-ufc-core from GitHub
+uv run python -m qwenrag --check           # verifies the core release and prints the pipeline identity
+uv run python -m qwenrag                   # open http://127.0.0.1:8010 (UI) · API under /api · docs at /api/docs
 ```
+
+Port 8010 by default (`--port` or `QWENRAG_PORT`). Without a UI build, the root page explains how to
+build it; `/api/...` works either way.
+
+For frontend development with hot reload, keep the backend running and in another terminal:
 
 ```bash
 cd frontend
-npm install
-cp .env.example .env.local        # set VITE_DEV_PROXY_TARGET=http://127.0.0.1:8000
+cp .env.example .env.local        # VITE_DEV_PROXY_TARGET=http://127.0.0.1:8010
 npm run dev                       # http://localhost:5173 (npm run dev:mock needs no backend)
 ```
 
