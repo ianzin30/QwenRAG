@@ -24,7 +24,8 @@ label = "Qwen 3.6 — Spark"
 [core]
 lock = "../core-release.lock.json"
 # Keep false: a pipeline that differs from the approved release refuses to start.
-allow_divergent_pipeline = false
+# Set to true because [core.overrides] below doubles the output token limits.
+allow_divergent_pipeline = true
 
 [core.deployment.llm]
 timeout_seconds = 420
@@ -39,4 +40,16 @@ batch_size = 8
 embedding_ollama_base_url = "http://localhost:11434"
 embedding_timeout_seconds = 120
 
-# [core.overrides]  # deliberate pipeline changes; reported as "divergent"
+# Deliberate pipeline changes; reported as "divergent".
+# Output token limits doubled from the release (2048 -> 4096): answers were
+# being refused as truncated ("A saída atingiu max_tokens").
+[core.overrides.llm]
+max_output_tokens = 4096
+
+[core.overrides.llm.role_max_output_tokens]
+planner = 1024
+research = 768
+reasoning = 1536
+answer = 4096
+verification = 2048  # doubled twice: 1024 still truncated
+source_focus = 768
