@@ -34,7 +34,7 @@ constraint-dependencies = ["pypdf==6.9.2"]
 [tool.uv.sources]
 # Immutable pin: the commit of an approved core release (core-release.lock.json records it).
 rag-ufc-core = { git = "https://github.com/ianzin30/RAG_UFC.git", rev = "94d1c84b77433f86fbd499b08f3647dab6489598", subdirectory = "packages/rag-ufc-core" }
-# CPU wheels: the application runs embeddings through Ollama and reranks on CPU.
+# CPU wheels: local sparse retrieval still uses PyTorch; Spark reranking uses HTTP.
 torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux' or sys_platform == 'win32'" }]
 
 [[tool.uv.index]]
