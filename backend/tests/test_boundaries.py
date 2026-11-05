@@ -22,7 +22,13 @@ def imports():
 
 def test_application_imports_only_the_stable_core_api():
     used = {(path.name, name) for path, name in imports() if name.split(".")[0] == "rag_ufc_core"}
-    assert {name for _, name in used} <= STABLE_CORE_MODULES, used
+    adapter_seam = {
+        ("remote_reranker.py", "rag_ufc_core.rag.v2.Engine"),
+        ("remote_reranker.py", "rag_ufc_core.rag.v2.Spark"),
+        ("remote_models.py", "rag_ufc_core.rag.v2.Providers"),
+        ("remote_reranker.py", "rag_ufc_core.rag.v2.Providers"),
+    }
+    assert {item for item in used if item[1] not in STABLE_CORE_MODULES} <= adapter_seam, used
 
 
 def test_application_has_no_research_imports_or_checkout_paths():

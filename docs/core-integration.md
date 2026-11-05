@@ -33,7 +33,7 @@ Models offered in the UI must be the release's approved model unless divergence 
 |---|---|
 | Generation (Spark, OpenAI-compatible) | `[core.deployment.llm.providers.spark] base_url`, key in `.env` as `LLM_API_KEY` |
 | Embeddings (Ollama, `embeddinggemma:latest`) | `[core.deployment.retrieval] embedding_ollama_base_url` |
-| Reranker (`BAAI/bge-reranker-v2-m3`) and Qwen tokenizer | Hugging Face cache; `python -m qwenrag` runs with `HF_HUB_OFFLINE=1`, so download them once beforehand |
+| Reranker and Qwen tokenizer | Spark APIs in the default profile; only the legacy local profile requires their local Hugging Face cache |
 | Documents, indexes, conversations | `data_root` (`collections/`, `cache/rag_v2/`, `conversations.json`) |
 
 Secrets are read from the process environment first, then from `env_file`; they never enter settings,

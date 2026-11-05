@@ -24,20 +24,33 @@ label = "Qwen 3.6 — Spark"
 [core]
 lock = "../core-release.lock.json"
 # Keep false: a pipeline that differs from the approved release refuses to start.
-# Set to true because [core.overrides] below doubles the output token limits.
+# This deployment deliberately changes output token limits and the reranker.
 allow_divergent_pipeline = true
+spark_tokenization = true
+
+# Local end of the SSH tunnel to the Spark's port 8006.
+[core.reranker]
+base_url = "http://127.0.0.1:18006"
+model = "nvidia/Nemotron-3.5-Rerank-8B-BF16"
+timeout_seconds = 120
+
+[core.spark_retrieval]
+embedding_url = "http://127.0.0.1:18003"
+embedding_model = "nvidia/Nemotron-3-Embed-8B-BF16"
+lexical_url = "http://127.0.0.1:18007"
+lexical_revision = "5617a9f61b028005a4858fdac845db406aefb181"
+timeout_seconds = 120
 
 [core.deployment.llm]
 timeout_seconds = 420
 
 [core.deployment.llm.providers.spark]
-base_url = "https://spark.ollama.atlab.ufc.br/api"
+base_url = "http://127.0.0.1:18000/v1"
 api_key_env = "LLM_API_KEY"
 
 [core.deployment.retrieval]
 device = "cpu"
 batch_size = 8
-embedding_ollama_base_url = "http://localhost:11434"
 embedding_timeout_seconds = 120
 
 # Deliberate pipeline changes; reported as "divergent".

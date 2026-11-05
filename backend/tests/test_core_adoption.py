@@ -66,7 +66,7 @@ def test_models_outside_the_approved_pipeline_are_refused(tmp_path, no_network):
     settings = make_settings(tmp_path)
     raw = tomllib.loads((Path(__file__).resolve().parents[2] / "config/qwenrag.toml").read_text())
     raw.update(data_root=str(settings.data_root), env_file=str(settings.env_file))
-    raw["core"]["lock"] = str(settings.lock_path)
+    raw["core"] = {"lock": str(settings.lock_path)}
     raw["models"].append({"model_name": "other/model", "label": "Other"})
     with pytest.raises(CoreAdoptionError, match="other/model"):
         CoreRuntime(AppSettings.from_mapping(raw, base=settings.config_path.parent))
@@ -89,7 +89,8 @@ def _config_file(tmp_path, settings, extra=""):
     text = (Path(__file__).resolve().parents[2] / "config/qwenrag.toml").read_text(encoding="utf-8")
     text = text.replace('data_root = "../data"', f'data_root = "{tmp_path / "data"}"')
     text = text.replace('env_file = "../.env"', f'env_file = "{tmp_path / ".env"}"')
-    text = text.replace('lock = "../core-release.lock.json"', f'lock = "{settings.lock_path}"')
+    # A baseline fixture must not inherit deployment-specific pipeline choices.
+    text = text.split("[core]", 1)[0] + f'[core]\nlock = "{settings.lock_path}"\n'
     path = tmp_path / "qwenrag.toml"
     path.write_text(text + extra, encoding="utf-8")
     return path

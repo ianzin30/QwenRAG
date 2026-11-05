@@ -11,10 +11,30 @@ produced it.
 ## Requirements
 
 * Python 3.11 and [uv](https://docs.astral.sh/uv/); Node 18.18+.
-* Model services reachable from the backend: the Spark OpenAI-compatible endpoint (generation, key in
-  `LLM_API_KEY`) and Ollama with `embeddinggemma:latest` (embeddings).
-* The Hugging Face cache must contain `BAAI/bge-reranker-v2-m3` and the
-  `nvidia/Qwen3.6-35B-A3B-NVFP4` tokenizer (the server runs with `HF_HUB_OFFLINE=1`).
+* The default configuration keeps the app and its indexes on the developer's computer
+  and calls the Spark for Qwen 3.6 generation and chat tokenization, Nemotron
+  embeddings and reranking, and BGE-M3 lexical weights and text tokenization.
+  No local model cache or Ollama is needed for this profile. Keep `LLM_API_KEY`
+  configured for the generation client.
+
+Keep one SSH tunnel open with your own authorized Spark account:
+
+```bash
+ssh -N -o ExitOnForwardFailure=yes \
+  -L 127.0.0.1:18000:127.0.0.1:8000 \
+  -L 127.0.0.1:18003:127.0.0.1:8003 \
+  -L 127.0.0.1:18006:127.0.0.1:8006 \
+  -L 127.0.0.1:18007:127.0.0.1:8007 \
+  YOUR_SSH_USER@10.101.61.229
+```
+
+The committed `config/qwenrag.toml` matches these ports. The first collection
+load builds a Nemotron index alongside any previous EmbeddingGemma index.
+The app reports the new models as deliberate divergences from the pinned
+core release. Remote failures are surfaced rather than switching models.
+See [Spark services](docs/spark-services.md) for service contracts and the
+BGE-M3 server. The BGE-M3 service on the Spark uses CPU; the other models
+use GPU.
 
 ## Run
 

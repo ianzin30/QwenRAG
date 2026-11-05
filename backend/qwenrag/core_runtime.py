@@ -18,6 +18,8 @@ from dotenv import dotenv_values
 from rag_ufc_core import DataPaths, EngineSettings, RAGService, check_adoption, pipeline_identity, release_manifest
 from rag_ufc_core.secret_source import use_secret_source
 
+from .remote_models import describe_remote_embedding
+from .remote_reranker import create_remote_service
 from .settings import AppSettings
 
 
@@ -73,13 +75,21 @@ class CoreRuntime:
 
         use_secret_source(secret)
         core = settings.core
-        self.engine_settings = EngineSettings.from_release(core.deployment, overrides=core.overrides)
+        overrides = dict(core.overrides)
+        if core.reranker is not None:
+            overrides["retrieval"] = {**overrides.get("retrieval", {}), "reranker_model": core.reranker.model}
+        if core.spark_retrieval is not None:
+            # The pinned core has no custom encoder enum; mark the semantic change
+            # using its existing identity field. The factory installs the HTTP encoder.
+            overrides["retrieval"] = {**overrides.get("retrieval", {}),
+                                      "embedding_ollama_model": core.spark_retrieval.embedding_model}
+        self.engine_settings = EngineSettings.from_release(core.deployment, overrides=overrides)
         self.paths = DataPaths.under(settings.data_root)
         self.lock = read_lock(settings.lock_path)
         self.approved_model = self.engine_settings.llm.model
         self.model_labels = {option.model_name: option.label or option.model_name for option in settings.models}
         self.model_labels.setdefault(self.approved_model, self.approved_model)
-        self.identity = pipeline_identity(self.engine_settings)
+        self.identity = self.identity_for(self.approved_model)
         self.adoption = self._adoption(self.identity)
         unapproved_models = [m for m in self.model_labels if m != self.approved_model]
         if enforce and not core.allow_divergent_pipeline:
@@ -112,10 +122,15 @@ class CoreRuntime:
                 for name, label in self.model_labels.items()]
 
     def create_service(self, model_name: str) -> RAGService:
-        return RAGService(self.engine_settings, self.paths, model_name=model_name)
+        core = self.app_settings.core
+        if not (core.reranker or core.spark_retrieval or core.spark_tokenization):
+            return RAGService(self.engine_settings, self.paths, model_name=model_name)
+
+        return create_remote_service(self.engine_settings, self.paths, model_name, core)
 
     def identity_for(self, model: str, index_diagnostics=None) -> dict:
-        return pipeline_identity(self.engine_settings.with_model(model), index_diagnostics=index_diagnostics)
+        identity = pipeline_identity(self.engine_settings.with_model(model), index_diagnostics=index_diagnostics)
+        return describe_remote_embedding(identity, self.app_settings.core.spark_retrieval)
 
     def turn_profile(self, model: str) -> dict:
         """Stored with every turn: which approved pipeline produced the answer."""

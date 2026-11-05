@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 import tomllib
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 
 # Repository root or backend/ as working directory.
 DEFAULT_CONFIGS = (Path("config/qwenrag.toml"), Path("../config/qwenrag.toml"))
@@ -34,11 +34,30 @@ class ModelOption(BaseModel):
     label: str = ""
 
 
+class RemoteRerankerSettings(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    base_url: HttpUrl
+    model: str = Field(min_length=1)
+    timeout_seconds: float = Field(default=120, gt=0)
+
+
+class SparkRetrievalSettings(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    embedding_url: HttpUrl
+    embedding_model: str = Field(min_length=1)
+    lexical_url: HttpUrl
+    lexical_revision: str = Field(pattern=r"^[0-9a-f]{40}$")
+    timeout_seconds: float = Field(default=120, gt=0)
+
+
 class CoreSettings(BaseModel):
     model_config = ConfigDict(extra="forbid")
     lock: str = "../core-release.lock.json"
     # Refuse to start when the effective pipeline is not the approved one.
     allow_divergent_pipeline: bool = False
+    reranker: RemoteRerankerSettings | None = None
+    spark_retrieval: SparkRetrievalSettings | None = None
+    spark_tokenization: bool = False
     deployment: dict = Field(default_factory=dict)
     overrides: dict = Field(default_factory=dict)
 
